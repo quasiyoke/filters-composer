@@ -28,11 +28,11 @@ const COMMON_CONFIG = merge([
 
 const DEVELOPMENT_CONFIG = merge([
   COMMON_CONFIG,
+  parts.developmentServer({
+    staticPath: getAbsolutePath('src'),
+  }),
   {
     mode: 'development',
-    devServer: {
-      historyApiFallback: true,
-    },
   },
 ]);
 

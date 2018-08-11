@@ -17,7 +17,7 @@
 export default {
   methods: {
     addEffect() {
-      this.$store.dispatch('addEffect');
+      this.$store.commit('addEffect');
     },
   },
 };

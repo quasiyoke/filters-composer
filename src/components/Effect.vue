@@ -1,9 +1,9 @@
 <template>
-  <v-card class="root mb-2">
+  <v-card class="mt-2">
     <v-card-title>
       <v-layout align-center>
         <v-flex xs12>
-          {{ effect.description }}
+          {{ effect.name }}
         </v-flex>
         <v-flex>
           <v-btn
@@ -35,7 +35,7 @@ export default {
         return this.effect.status;
       },
       set(status) {
-        this.$store.dispatch('setJobStatus', {
+        this.$store.commit('setJobStatus', {
           jobId: this.effect.id,
           status,
         });
@@ -44,19 +44,13 @@ export default {
   },
   methods: {
     remove() {
-      this.$store.dispatch('removeEffect', this.effect.id);
+      this.$store.commit('removeEffect', this.effect.id);
     },
   },
 };
 </script>
 
 <style scoped lang="styl">
-.root {
-  &:hover {
-    color: #aaa;
-  }
-}
-
 .isStarted {
   float: right;
 }

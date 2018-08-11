@@ -2,6 +2,14 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
+exports.developmentServer = ({
+  staticPath = false,
+} = {}) => ({
+  devServer: {
+    contentBase: staticPath,
+  },
+});
+
 exports.fonts = () => ({
   module: {
     rules: [

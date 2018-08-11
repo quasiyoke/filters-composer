@@ -1,24 +1,23 @@
 <template>
   <v-container>
-    <v-layout column>
-      <v-flex>
-        <EffectsList/>
-      </v-flex>
-      <v-flex text-xs-center mt-4>
-        <AddEffect/>
-      </v-flex>
-    </v-layout>
+    <OpenPicture/>
+    <EffectsList/>
+    <div class="text-xs-center mt-4">
+      <AddEffect/>
+    </div>
   </v-container>
 </template>
 
 <script>
 import AddEffect from '@/components/AddEffect';
 import EffectsList from '@/components/EffectsList';
+import OpenPicture from '@/components/OpenPicture';
 
 export default {
   components: {
     AddEffect,
     EffectsList,
+    OpenPicture,
   },
 };
 </script>
