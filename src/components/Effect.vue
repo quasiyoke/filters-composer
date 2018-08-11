@@ -3,7 +3,16 @@
     <v-card-title>
       <v-layout align-center>
         <v-flex xs12>
-          {{ effect.name }}
+          <v-layout column>
+            <v-flex>
+              <v-select
+                :items="effectsChoices"
+                v-model="type"
+                label="Filter"
+                height="32"
+              />
+            </v-flex>
+          </v-layout>
         </v-flex>
         <v-flex>
           <v-btn
@@ -22,6 +31,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   props: {
     effect: {
@@ -30,14 +41,26 @@ export default {
     },
   },
   computed: {
-    status: {
+    ...mapState({
+      effectsChoices: state => Object.values(state.effectsPresets)
+        .map(
+          ({
+            type,
+            name,
+          }) => ({
+            text: name,
+            value: type,
+          }),
+        ),
+    }),
+    type: {
       get() {
-        return this.effect.status;
+        return this.effect.type;
       },
-      set(status) {
-        this.$store.commit('setJobStatus', {
-          jobId: this.effect.id,
-          status,
+      set(type) {
+        this.$store.commit('setEffectType', {
+          effectId: this.effect.id,
+          type,
         });
       },
     },

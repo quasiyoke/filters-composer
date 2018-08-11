@@ -1,17 +1,76 @@
+import * as R from 'ramda';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { DEFAULT_EFFECT_PRESET } from '@/const';
+import { DEFAULT_EFFECT_PRESET_ID } from '@/const';
 import mutations from './mutations';
+
+const effectsPresets = {
+  blur: {
+    type: 'blur',
+    name: 'Blur',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        default: 0.5,
+      },
+    ],
+    getKernel: ({ strength }) => [
+      strength, strength, strength,
+      1, 1, 1,
+      1, 1, 1,
+    ],
+  },
+  emboss: {
+    type: 'emboss',
+    name: 'Emboss',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        default: 0.5,
+      },
+    ],
+    getKernel: ({ strength }) => [
+      strength, strength, strength,
+      1, 1, 1,
+      1, 1, 1,
+    ],
+  },
+  sharpen: {
+    type: 'sharpen',
+    name: 'Sharpen',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        default: 0.5,
+      },
+    ],
+    getKernel: ({ strength }) => [
+      strength, strength, strength,
+      1, 1, 1,
+      1, 1, 1,
+    ],
+  },
+};
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV === 'development',
   state: {
     effects: [{
-      ...DEFAULT_EFFECT_PRESET,
+      ...R.clone(effectsPresets[DEFAULT_EFFECT_PRESET_ID]),
       id: 1,
     }],
+    effectsPresets,
     pictureId: '2',
     pictures: {
       1: {
