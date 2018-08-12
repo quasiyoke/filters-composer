@@ -1,9 +1,9 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer app right>
+    <v-navigation-drawer app right class="grey darken-4">
       <OperationsList/>
     </v-navigation-drawer>
-    <v-content>
+    <v-content class="black">
       <v-layout column align-center justify-center fill-height>
         <VCanvas/>
       </v-layout>
