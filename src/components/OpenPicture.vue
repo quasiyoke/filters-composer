@@ -1,3 +1,5 @@
+<!-- Allows to choose an image for retouching. -->
+
 <template>
   <v-card>
     <v-card-title>
@@ -12,10 +14,6 @@
 </template>
 
 <script>
-/*
- * Allows to choose an image.
- */
-
 import { mapState } from 'vuex';
 
 export default {

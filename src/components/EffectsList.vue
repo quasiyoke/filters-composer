@@ -1,6 +1,8 @@
+<!-- Shows a list of effects applied to the picture. -->
+
 <template>
-  <div class="root">
-    <Effect
+  <div>
+    <VEffect
       v-for="effect in effects"
       :key="effect.id"
       :effect="effect"
@@ -12,14 +14,14 @@
 <script>
 import { mapState } from 'vuex';
 
-import Effect from '@/components/Effect';
+import VEffect from '@/components/VEffect';
 
 export default {
   computed: mapState({
     effects: 'effects',
   }),
   components: {
-    Effect,
+    VEffect,
   },
 };
 </script>

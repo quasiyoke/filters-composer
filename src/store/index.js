@@ -14,8 +14,8 @@ const effectsPresets = {
         id: 'strength',
         name: 'Strength',
         min: 0,
-        max: 1,
-        default: 0.5,
+        max: 1000,
+        value: 500,
       },
     ],
     getKernel: ({ strength }) => [
@@ -32,8 +32,8 @@ const effectsPresets = {
         id: 'strength',
         name: 'Strength',
         min: 0,
-        max: 1,
-        default: 0.5,
+        max: 1000,
+        value: 500,
       },
     ],
     getKernel: ({ strength }) => [
@@ -50,8 +50,8 @@ const effectsPresets = {
         id: 'strength',
         name: 'Strength',
         min: 0,
-        max: 1,
-        default: 0.5,
+        max: 1000,
+        value: 500,
       },
     ],
     getKernel: ({ strength }) => [

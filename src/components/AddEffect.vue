@@ -1,3 +1,5 @@
+<!-- Adds a new effect to the list of operations carried out on the picture. -->
+
 <template>
   <v-btn
     @click="addEffect"
@@ -10,10 +12,6 @@
 </template>
 
 <script>
-/*
- * Adds a new effect.
- */
-
 export default {
   methods: {
     addEffect() {
