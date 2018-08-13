@@ -15,6 +15,7 @@ const COMMON_CONFIG = merge([
     exclude: /node_modules/,
   }),
   parts.linting(),
+  parts.shaders(),
   parts.styles(),
   parts.vue(),
   {

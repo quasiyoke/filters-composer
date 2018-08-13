@@ -3,10 +3,8 @@
     <v-navigation-drawer app right class="grey darken-4">
       <OperationsList/>
     </v-navigation-drawer>
-    <v-content class="black">
-      <v-layout column align-center justify-center fill-height>
-        <VCanvas/>
-      </v-layout>
+    <v-content>
+      <VCanvas/>
     </v-content>
   </v-app>
 </template>

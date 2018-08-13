@@ -1,25 +1,58 @@
+<!-- Represents retouched picture. -->
+
 <template>
-  <img
-    :src="pictureUrl"
-    class="root"
-  >
+  <canvas class="root" ref="canvas"></canvas>
 </template>
 
 <script>
-/*
- * Allows to choose an image.
- */
+import { mapGetters, mapState } from 'vuex';
 
-import { mapGetters } from 'vuex';
+import { fetchPicture } from '@/utils/pictures';
+
+import { createContext, draw } from './graphics';
 
 export default {
-  computed: mapGetters(['pictureUrl']),
+  computed: {
+    ...mapGetters(['pictureUrl']),
+    ...mapState(['effects']),
+  },
+  mounted() {
+    this.updateContext();
+    window.addEventListener('resize', () => {
+      this.updateContext();
+    });
+  },
+  watch: {
+    effects() {
+      this.redraw();
+    },
+    pictureUrl() {
+      this.updateContext();
+    },
+  },
+  methods: {
+    redraw() {
+      if (!this.ctx) {
+        return;
+      }
+
+      draw(this.ctx);
+    },
+    updateContext() {
+      this.ctx = null;
+      fetchPicture(this.pictureUrl)
+        .then((picture) => {
+          this.ctx = createContext(this.$refs.canvas, picture);
+          this.redraw();
+        });
+    },
+  },
 };
 </script>
 
 <style scoped lang="styl">
   .root {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
   }
 </style>

@@ -68,6 +68,17 @@ exports.linting = ({
   },
 });
 
+exports.shaders = () => ({
+  module: {
+    rules: [
+      {
+        test: /\.glsl$/,
+        use: 'raw-loader',
+      },
+    ],
+  },
+});
+
 exports.styles = () => ({
   module: {
     rules: [
