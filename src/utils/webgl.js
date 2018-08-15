@@ -71,7 +71,10 @@ export const createProgram = (gl, vertexShaderSrc, fragmentShaderSrc) => {
   return program;
 };
 
-export const createTexture = (gl, picture) => {
+/**
+ * @param {number[]} size - Width and height.
+ */
+export const createTexture = (gl, picture, ...size) => {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   // Wrapping function for texture coordinate `s`.
@@ -81,8 +84,33 @@ export const createTexture = (gl, picture) => {
   // Texture minification filter.
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   // Default texture magnification filter is LINEAR, so we'll keep it as is.
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, picture);
+  const sizeAndBorder = size.length
+    ? [...size, 0]
+    : size;
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0, // MIP level. `0` means: "the largest image from the MIP map".
+    gl.RGBA, // Internal format. The format we want in the texture.
+    ...sizeAndBorder,
+    gl.RGBA, // Source format. The format we're supplying.
+    gl.UNSIGNED_BYTE, // Source type. Type of data we're supplying.
+    picture,
+  );
   return texture;
+};
+
+export const createTextureAndFramebuffer = (gl, width, height) => {
+  const texture = createTexture(gl, null, width, height);
+  const framebuffer = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER,
+    gl.COLOR_ATTACHMENT0, // Attachment point.
+    gl.TEXTURE_2D,
+    texture,
+    0, // MIP level. `0` means: "the largest image from the MIP map".
+  );
+  return [texture, framebuffer];
 };
 
 export const updateCanvasSize = (gl, pointer) => {
@@ -98,4 +126,8 @@ export const updateCanvasSize = (gl, pointer) => {
 
   gl.viewport(0, 0, clientWidth, clientHeight);
   gl.uniform2f(pointer, clientWidth, clientHeight);
+  return {
+    width: clientWidth,
+    height: clientHeight,
+  };
 };

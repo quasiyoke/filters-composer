@@ -72,7 +72,7 @@ exports.shaders = () => ({
   module: {
     rules: [
       {
-        test: /\.glsl$/,
+        test: /\.(vs|fs)$/,
         use: 'raw-loader',
       },
     ],

@@ -6,24 +6,6 @@ import { DEFAULT_EFFECT_PRESET_ID } from '@/const';
 import mutations from './mutations';
 
 const effectsPresets = {
-  blur: {
-    type: 'blur',
-    name: 'Blur',
-    attributes: [
-      {
-        id: 'strength',
-        name: 'Strength',
-        min: 0,
-        max: 1000,
-        value: 500,
-      },
-    ],
-    getKernel: ({ strength }) => [
-      strength, strength, strength,
-      1, 1, 1,
-      1, 1, 1,
-    ],
-  },
   emboss: {
     type: 'emboss',
     name: 'Emboss',
@@ -32,32 +14,35 @@ const effectsPresets = {
         id: 'strength',
         name: 'Strength',
         min: 0,
-        max: 1000,
-        value: 500,
+        max: 1,
+        value: 0.5,
       },
     ],
-    getKernel: ({ strength }) => [
-      strength, strength, strength,
-      1, 1, 1,
-      1, 1, 1,
-    ],
   },
-  sharpen: {
-    type: 'sharpen',
-    name: 'Sharpen',
+  gaussianBlur: {
+    type: 'gaussianBlur',
+    name: 'Gaussian blur',
     attributes: [
       {
         id: 'strength',
         name: 'Strength',
         min: 0,
-        max: 1000,
-        value: 500,
+        max: 1,
+        value: 0.5,
       },
     ],
-    getKernel: ({ strength }) => [
-      strength, strength, strength,
-      1, 1, 1,
-      1, 1, 1,
+  },
+  sharpness: {
+    type: 'sharpness',
+    name: 'Sharpness',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        value: 0.5,
+      },
     ],
   },
 };

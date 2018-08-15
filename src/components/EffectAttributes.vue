@@ -4,18 +4,25 @@
   <div>
     <v-slider
       v-for="attribute in effect.attributes"
-      :value="attribute.value"
-      :min="attribute.min"
-      :max="attribute.max"
+      :value="(attribute.value - attribute.min) / (attribute.max - attribute.min) * stepsCount"
+      :min="0"
+      :max="stepsCount"
       :label="attribute.name"
       :key="attribute.id"
-      @input="setAttributeValue(attribute.id, $event)"
+      @input="setAttributeValue(attribute, $event)"
     />
   </div>
 </template>
 
 <script>
+const stepsCount = 1000;
+
 export default {
+  data() {
+    return {
+      stepsCount,
+    };
+  },
   props: {
     effect: {
       type: Object,
@@ -23,11 +30,11 @@ export default {
     },
   },
   methods: {
-    setAttributeValue(attributeId, value) {
+    setAttributeValue({ id, min, max }, value) {
       this.$store.commit('setEffectAttributeValue', {
         effectId: this.effect.id,
-        attributeId,
-        value,
+        attributeId: id,
+        value: value / stepsCount * (max - min) + min,
       });
     },
   },

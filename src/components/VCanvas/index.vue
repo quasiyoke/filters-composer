@@ -8,22 +8,26 @@
 import { mapGetters, mapState } from 'vuex';
 
 import { fetchPicture } from '@/utils/pictures';
+import { getKernel } from '@/utils/effects';
 
 import { createContext, draw } from './graphics';
 
 export default {
   computed: {
     ...mapGetters(['pictureUrl']),
-    ...mapState(['effects']),
+    ...mapState({
+      kernels: ({ effects }) => effects.map(getKernel),
+    }),
   },
   mounted() {
     this.updateContext();
-    window.addEventListener('resize', () => {
-      this.updateContext();
-    });
+    window.addEventListener('resize', this.updateContext);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateContext);
   },
   watch: {
-    effects() {
+    kernels() {
       this.redraw();
     },
     pictureUrl() {
@@ -36,7 +40,7 @@ export default {
         return;
       }
 
-      draw(this.ctx);
+      draw(this.ctx, this.kernels);
     },
     updateContext() {
       this.ctx = null;

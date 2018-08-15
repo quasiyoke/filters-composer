@@ -3,30 +3,10 @@
 import * as R from 'ramda';
 
 import { DEFAULT_EFFECT_PRESET_ID } from '@/const';
+import { getAttributesHash } from '@/utils/effects';
 import { selectEffect, getEffectAttribute } from './selectors';
 
 let newEffectId = 100;
-
-/**
- * Creates a table of attributes' values.
- *
- * @example
- * getAttributesHash([
- *   { id: 'strength', value: 0.3, },
- *   { id: 'foo', value: 0.1, },
- * ]);
- * //=> {
- * //=>   strength: 0.3,
- * //=>   foo: 0.1,
- * //=> },
- */
-const getAttributesHash = attributes => attributes.reduce(
-  (acc, { id, value }) => {
-    acc[id] = value;
-    return acc;
-  },
-  {},
-);
 
 /**
  * Takes values for the new attributes' set from the old one.
