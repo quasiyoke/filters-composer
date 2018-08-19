@@ -22,11 +22,26 @@ export const applyBuffer = (gl, buffer, pointer) => {
   );
 };
 
-export const createBuffer = (gl, arr) => {
-  const buffer = gl.createBuffer();
+/**
+ * Binds framebuffer and its resolution to the WebGL context.
+ */
+export const bindFramebuffer = (
+  {
+    gl,
+    resolutionUniformPointer,
+  },
+  framebuffer,
+  width,
+  height,
+) => {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  gl.uniform2f(resolutionUniformPointer, width, height);
+  gl.viewport(0, 0, width, height);
+};
+
+export const setBufferData = (gl, buffer, arr) => {
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW);
-  return buffer;
 };
 
 const createShader = (gl, type, src) => {
@@ -113,19 +128,15 @@ export const createTextureAndFramebuffer = (gl, width, height) => {
   return [texture, framebuffer];
 };
 
-export const updateCanvasSize = (gl, pointer) => {
+export const updateCanvasSize = (gl) => {
   const { canvas } = gl;
   const { clientWidth, clientHeight } = canvas;
 
   if (canvas.width !== clientWidth || canvas.height !== clientHeight) {
-    // eslint-disable-next-line no-param-reassign
     canvas.width = clientWidth;
-    // eslint-disable-next-line no-param-reassign
     canvas.height = clientHeight;
   }
 
-  gl.viewport(0, 0, clientWidth, clientHeight);
-  gl.uniform2f(pointer, clientWidth, clientHeight);
   return {
     width: clientWidth,
     height: clientHeight,

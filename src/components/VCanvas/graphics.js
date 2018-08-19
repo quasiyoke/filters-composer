@@ -1,17 +1,15 @@
 import * as R from 'ramda';
 
-import {
-  BLACK_RGBA,
-  DIMENSIONS_COUNT,
-} from '@/const';
+import { BLACK_RGBA } from '@/const';
 import { getWeight } from '@/utils/effects';
 import {
   applyBuffer,
+  bindFramebuffer,
   clear,
-  createBuffer,
   createProgram,
   createTexture,
   createTextureAndFramebuffer,
+  setBufferData,
   updateCanvasSize,
 } from '@/utils/webgl';
 
@@ -19,6 +17,7 @@ import VERTEX_SHADER_SRC from './main.vs';
 import FRAGMENT_SHADER_SRC from './main.fs';
 
 const FRAMEBUFFERS_COUNT = 2;
+const POINTS_COUNT = 4;
 const TEXTURE_COORDINATES = [
   0, 0,
   1, 0,
@@ -29,7 +28,7 @@ const TEXTURE_COORDINATES = [
 /**
  * Calculates vertices' positions.
  */
-const getPositions = (gl, { width, height }) => {
+const getCenteredPicturePositions = (gl, { width, height }) => {
   const { clientWidth, clientHeight } = gl.canvas;
   const scale = clientWidth / clientHeight > width / height
     ? clientHeight / height
@@ -45,6 +44,13 @@ const getPositions = (gl, { width, height }) => {
     left + newWidth, top + newHeight,
   ];
 };
+
+const getDummyPositions = ({ width, height }) => ([
+  0, 0,
+  width, 0,
+  0, height,
+  width, height,
+]);
 
 export const createContext = (canvas, picture) => {
   const gl = canvas.getContext('webgl2');
@@ -64,10 +70,11 @@ export const createContext = (canvas, picture) => {
   const kernelUniformPointer = gl.getUniformLocation(program, 'u_kernel[0]');
   const kernelWeightUniformPointer = gl.getUniformLocation(program, 'u_kernelWeight');
   const resolutionUniformPointer = gl.getUniformLocation(program, 'u_resolution');
+  const scaleUniformPointer = gl.getUniformLocation(program, 'u_scale');
 
-  const positions = getPositions(gl, picture);
-  const positionsBuffer = createBuffer(gl, positions);
-  const textureCoordinatesBuffer = createBuffer(gl, TEXTURE_COORDINATES);
+  const positionsBuffer = gl.createBuffer();
+  const textureCoordinatesBuffer = gl.createBuffer();
+  setBufferData(gl, textureCoordinatesBuffer, TEXTURE_COORDINATES);
   const pictureTexture = createTexture(gl, picture);
   const [textures, framebuffers] = R.compose(
     R.transpose,
@@ -85,8 +92,10 @@ export const createContext = (canvas, picture) => {
     kernelUniformPointer,
     kernelWeightUniformPointer,
     pictureTexture,
-    positions,
+    picture,
+    positionsBuffer,
     resolutionUniformPointer,
+    scaleUniformPointer,
     textures,
   };
 };
@@ -95,26 +104,61 @@ const drawWithKernel = ({
   gl,
   kernelUniformPointer,
   kernelWeightUniformPointer,
-  positions,
 }, kernel) => {
   gl.uniform1fv(kernelUniformPointer, kernel);
   gl.uniform1f(kernelWeightUniformPointer, getWeight(kernel));
   gl.drawArrays(
     gl.TRIANGLE_STRIP, // Primitive type.
     0, // Offset.
-    positions.length / DIMENSIONS_COUNT, // Count.
+    POINTS_COUNT, // Count.
   );
 };
 
 export const draw = (ctx, kernels) => {
   const {
+    framebuffers,
     gl,
     pictureTexture,
-    resolutionUniformPointer,
+    picture,
+    positionsBuffer,
+    scaleUniformPointer,
+    textures,
   } = ctx;
-  updateCanvasSize(gl, resolutionUniformPointer);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  clear(gl, BLACK_RGBA);
+  const { width, height } = updateCanvasSize(gl);
   gl.bindTexture(gl.TEXTURE_2D, pictureTexture);
-  drawWithKernel(ctx, kernels[0]);
+  // Bind dummy scale to prevent scaling the image during the processing.
+  gl.uniform2f(scaleUniformPointer, 1, 1);
+  setBufferData(
+    gl,
+    positionsBuffer,
+    getDummyPositions(picture),
+  );
+
+  /*
+   * Apply effects to an image one by one writing the result to the
+   * alternating framebuffers.
+   */
+  kernels.forEach((kernel, i) => {
+    if (i === kernels.length - 1) {
+      setBufferData(
+        gl,
+        positionsBuffer,
+        getCenteredPicturePositions(gl, picture),
+      );
+      bindFramebuffer(ctx, null, width, height);
+      clear(gl, BLACK_RGBA);
+      // Bind vertical-flipping scale to draw picture on the viewport correctly.
+      gl.uniform2f(scaleUniformPointer, 1, -1);
+    } else {
+      bindFramebuffer(
+        ctx,
+        framebuffers[i % FRAMEBUFFERS_COUNT],
+        picture.width,
+        picture.height,
+      );
+    }
+
+    drawWithKernel(ctx, kernel);
+    gl.bindTexture(gl.TEXTURE_2D, textures[i % FRAMEBUFFERS_COUNT]);
+  });
 };

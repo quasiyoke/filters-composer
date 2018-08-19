@@ -1,21 +1,36 @@
 import * as R from 'ramda';
 
 const builders = {
+  edgeDetect: () => {
+    const W = -0.125; // Weight.
+    return [
+      W, W, W,
+      W, 1, W,
+      W, W, W,
+    ];
+  },
   emboss: ({ strength }) => [
     -2 * strength, -1 * strength, 0,
-    -1 * strength, 1, 1 * strength,
-    0, 1 * strength, 2 * strength,
+    -1 * strength, 1, strength,
+    0, strength, 2 * strength,
   ],
-  gaussianBlur: ({ strength }) => [
-    1 * strength, 2 * strength, 1 * strength,
-    2 * strength, 1, 2 * strength,
-    1 * strength, 2 * strength, 1 * strength,
-  ],
-  sharpness: ({ strength }) => [
-    0, -1 * strength, 0,
-    -1 * strength, 5, -1 * strength,
-    0, -1 * strength, 0,
-  ],
+  gaussianBlur: ({ strength }) => {
+    const S = 0.367 * strength; // Side weight.
+    const C = 0.136 * strength; // Corner weight.
+    return [
+      C, S, C,
+      S, 1, S,
+      C, S, C,
+    ];
+  },
+  sharpness: ({ strength }) => {
+    const W = -strength; // Weight.
+    return [
+      0, W, 0,
+      W, 5, W,
+      0, W, 0,
+    ];
+  },
 };
 
 /**

@@ -6,6 +6,11 @@ import { DEFAULT_EFFECT_PRESET_ID } from '@/const';
 import mutations from './mutations';
 
 const effectsPresets = {
+  edgeDetect: {
+    type: 'edgeDetect',
+    name: 'Edge detect',
+    attributes: [],
+  },
   emboss: {
     type: 'emboss',
     name: 'Emboss',
