@@ -1,5 +1,52 @@
 import * as R from 'ramda';
 
+export const presets = {
+  edgeDetect: {
+    type: 'edgeDetect',
+    name: 'Edge detect',
+    attributes: [],
+  },
+  emboss: {
+    type: 'emboss',
+    name: 'Emboss',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        value: 0.5,
+      },
+    ],
+  },
+  gaussianBlur: {
+    type: 'gaussianBlur',
+    name: 'Gaussian blur',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        value: 0.5,
+      },
+    ],
+  },
+  sharpness: {
+    type: 'sharpness',
+    name: 'Sharpness',
+    attributes: [
+      {
+        id: 'strength',
+        name: 'Strength',
+        min: 0,
+        max: 1,
+        value: 0.5,
+      },
+    ],
+  },
+};
+
 const builders = {
   edgeDetect: () => {
     const W = -0.125; // Weight.

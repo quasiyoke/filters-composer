@@ -3,64 +3,18 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { DEFAULT_EFFECT_PRESET_ID } from '@/const';
+import { presets } from '@/utils/effects';
 import mutations from './mutations';
-
-const effectsPresets = {
-  edgeDetect: {
-    type: 'edgeDetect',
-    name: 'Edge detect',
-    attributes: [],
-  },
-  emboss: {
-    type: 'emboss',
-    name: 'Emboss',
-    attributes: [
-      {
-        id: 'strength',
-        name: 'Strength',
-        min: 0,
-        max: 1,
-        value: 0.5,
-      },
-    ],
-  },
-  gaussianBlur: {
-    type: 'gaussianBlur',
-    name: 'Gaussian blur',
-    attributes: [
-      {
-        id: 'strength',
-        name: 'Strength',
-        min: 0,
-        max: 1,
-        value: 0.5,
-      },
-    ],
-  },
-  sharpness: {
-    type: 'sharpness',
-    name: 'Sharpness',
-    attributes: [
-      {
-        id: 'strength',
-        name: 'Strength',
-        min: 0,
-        max: 1,
-        value: 0.5,
-      },
-    ],
-  },
-};
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV === 'development',
   state: {
     effects: [{
-      ...R.clone(effectsPresets[DEFAULT_EFFECT_PRESET_ID]),
+      ...R.clone(presets[DEFAULT_EFFECT_PRESET_ID]),
       id: 1,
     }],
-    effectsPresets,
+    effectsPresets: presets,
     pictureId: '2',
     pictures: {
       1: {
